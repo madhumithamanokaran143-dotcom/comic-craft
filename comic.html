@@ -1,0 +1,530 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ComicCraft AI Story Creator</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    min-height:100vh;
+    padding:25px;
+    background:linear-gradient(135deg,#667eea,#764ba2);
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+}
+
+.header{
+    text-align:center;
+    color:white;
+    margin-bottom:20px;
+}
+
+.header h1{
+    font-size:42px;
+    text-shadow:3px 3px #333;
+}
+
+.header p{
+    margin-top:8px;
+}
+
+.box{
+    background:white;
+    padding:25px;
+    border-radius:25px;
+    box-shadow:0 10px 35px #2228;
+}
+
+label{
+    font-weight:bold;
+    display:block;
+    margin-top:12px;
+}
+
+input,textarea,select{
+    width:100%;
+    padding:13px;
+    margin-top:7px;
+    border:2px solid #ddd;
+    border-radius:12px;
+    font-size:16px;
+}
+
+textarea{
+    height:100px;
+    resize:none;
+}
+
+button{
+    border:0;
+    padding:12px 20px;
+    margin:8px 5px 0 0;
+    border-radius:25px;
+    cursor:pointer;
+    font-weight:bold;
+    font-size:15px;
+}
+
+.generate{
+    background:linear-gradient(90deg,#ff512f,#dd2476);
+    color:white;
+    width:100%;
+    margin-top:20px;
+    font-size:18px;
+}
+
+.theme{
+    background:#eee;
+}
+
+.output{
+    margin-top:25px;
+    padding:35px;
+    border-radius:25px;
+    border:5px solid #222;
+    min-height:500px;
+    transition:.4s;
+}
+
+.superhero{
+    background:
+    radial-gradient(circle,#ffffff55 2px,transparent 3px),
+    linear-gradient(135deg,#141e30,#243b55);
+    background-size:30px 30px;
+    color:white;
+}
+
+.funny{
+    background:#fff3a6;
+    color:#222;
+}
+
+.fantasy{
+    background:linear-gradient(135deg,#2b1055,#7597de);
+    color:white;
+}
+
+.space{
+    background:
+    radial-gradient(circle,#fff 1px,transparent 2px),
+    #090b25;
+    background-size:35px 35px;
+    color:white;
+}
+
+.nature{
+    background:linear-gradient(135deg,#d4fc79,#96e6a1);
+    color:#173b22;
+}
+
+.title{
+    text-align:center;
+    font-size:36px;
+    margin-bottom:15px;
+}
+
+.info{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.badge{
+    display:inline-block;
+    background:#ffd21f;
+    color:#222;
+    padding:8px 15px;
+    border-radius:20px;
+    margin:5px;
+    font-weight:bold;
+}
+
+.characters{
+    display:flex;
+    justify-content:center;
+    gap:35px;
+    margin:25px 0;
+    flex-wrap:wrap;
+}
+
+.character{
+    text-align:center;
+    font-size:50px;
+}
+
+.character span{
+    display:block;
+    font-size:16px;
+    font-weight:bold;
+}
+
+.story{
+    max-width:850px;
+    margin:auto;
+    font-size:18px;
+    line-height:1.9;
+    text-align:center;
+}
+
+.action{
+    text-align:center;
+    font-size:27px;
+    font-weight:bold;
+    margin:25px 0;
+}
+
+.bubbles{
+    display:flex;
+    justify-content:center;
+    gap:25px;
+    flex-wrap:wrap;
+    margin-top:30px;
+}
+
+.bubble{
+    background:white;
+    color:#222;
+    border:4px solid #222;
+    padding:18px;
+    border-radius:30px;
+    max-width:280px;
+    text-align:center;
+    box-shadow:5px 5px #222;
+}
+
+.ending{
+    text-align:center;
+    font-size:28px;
+    font-weight:bold;
+    margin-top:30px;
+}
+
+@media(max-width:600px){
+    body{
+        padding:10px;
+    }
+
+    .header h1{
+        font-size:30px;
+    }
+
+    .output{
+        padding:20px;
+    }
+
+    .title{
+        font-size:28px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="header">
+<h1>🎨 ComicCraft AI</h1>
+<p>✨ Short Idea → Full Comic Story ✨</p>
+</div>
+
+<div class="box">
+
+<label>👤 Main Character</label>
+<input id="character" placeholder="Example: Arun">
+
+<label>👥 Friend / Second Character</label>
+<input id="friend" placeholder="Example: Maya">
+
+<label>🎭 Genre</label>
+<select id="genre">
+<option>Adventure</option>
+<option>Comedy</option>
+<option>Fantasy</option>
+<option>Superhero</option>
+<option>Science Fiction</option>
+<option>Mystery</option>
+</select>
+
+<label>💡 Your Short Story Idea</label>
+<textarea id="idea"
+placeholder="Example: Two friends find a mysterious key in their school..."></textarea>
+
+<label>🎨 Choose Theme</label>
+
+<div>
+<button class="theme" onclick="changeTheme('superhero')">
+🦸 Superhero
+</button>
+
+<button class="theme" onclick="changeTheme('funny')">
+😂 Funny
+</button>
+
+<button class="theme" onclick="changeTheme('fantasy')">
+🧙 Fantasy
+</button>
+
+<button class="theme" onclick="changeTheme('space')">
+🚀 Space
+</button>
+
+<button class="theme" onclick="changeTheme('nature')">
+🌳 Nature
+</button>
+</div>
+
+<button class="generate" onclick="generateStory()">
+✨ DEVELOP MY STORY
+</button>
+
+</div>
+
+
+<!-- OUTPUT -->
+
+<div id="output" class="output superhero">
+
+<h2 class="title" id="title">
+📖 Your Comic Story
+</h2>
+
+<div class="info">
+<span class="badge" id="genreOut">🎭 Adventure</span>
+<span class="badge">✨ AI Developed</span>
+<span class="badge">💬 Comic</span>
+</div>
+
+<div class="characters">
+
+<div class="character">
+🧑
+<span id="charOut">Hero</span>
+</div>
+
+<div class="character">
+👩
+<span id="friendOut">Friend</span>
+</div>
+
+<div class="character">
+🐱
+<span>Magic Friend</span>
+</div>
+
+</div>
+
+<div class="action">
+⚡ BOOM! ✨
+</div>
+
+<div class="story" id="storyOut">
+Your developed story will appear here...
+</div>
+
+<div class="bubbles">
+
+<div class="bubble" id="bubble1">
+👋 Hello! Let's begin our adventure!
+</div>
+
+<div class="bubble" id="bubble2">
+😮 Wow! What is happening?
+</div>
+
+<div class="bubble" id="bubble3">
+💪 We can do this together!
+</div>
+
+</div>
+
+<div class="ending">
+🌟 THE END 🌟
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+let selectedTheme = "superhero";
+
+
+function changeTheme(theme){
+
+    selectedTheme = theme;
+
+    document.getElementById("output").className =
+        "output " + theme;
+}
+
+
+function generateStory(){
+
+    let character =
+        document.getElementById("character").value.trim();
+
+    let friend =
+        document.getElementById("friend").value.trim();
+
+    let genre =
+        document.getElementById("genre").value;
+
+    let idea =
+        document.getElementById("idea").value.trim();
+
+
+    if(character === "")
+        character = "Arun";
+
+    if(friend === "")
+        friend = "Maya";
+
+    if(idea === ""){
+
+        alert("💡 First enter a short story idea!");
+        return;
+
+    }
+
+
+    /* TITLE */
+
+    let titleText =
+        idea.split(" ").slice(0,5).join(" ");
+
+    document.getElementById("title").innerText =
+        "📖 " + titleText + " - The Adventure";
+
+
+    /* BASIC INFO */
+
+    document.getElementById("genreOut").innerText =
+        "🎭 " + genre;
+
+    document.getElementById("charOut").innerText =
+        character;
+
+    document.getElementById("friendOut").innerText =
+        friend;
+
+
+    /* STORY DEVELOPMENT */
+
+    let developedStory = `
+
+    🌅 It was a beautiful morning when
+    ${character} and ${friend} started their day.
+
+    <br><br>
+
+    💡 Suddenly, they discovered something unusual.
+
+    <br><br>
+
+    <b>Their idea:</b>
+    "${idea}"
+
+    <br><br>
+
+    😮 At first, they did not know what to do.
+    But their curiosity made them move forward.
+
+    <br><br>
+
+    ⚡ Suddenly, an unexpected challenge appeared!
+    The two friends looked at each other and decided
+    that they would face it together.
+
+    <br><br>
+
+    🗺️ They followed a mysterious path and discovered
+    a secret place that nobody had ever seen before.
+
+    <br><br>
+
+    💪 ${character} said,
+    "We should never give up!"
+
+    <br><br>
+
+    🤝 ${friend} smiled and replied,
+    "Yes! We can solve this together!"
+
+    <br><br>
+
+    🌟 After using their courage, teamwork and intelligence,
+    they finally solved the mystery.
+
+    <br><br>
+
+    🎉 Everyone celebrated their amazing achievement.
+
+    <br><br>
+
+    ❤️ From that day onwards, ${character} and ${friend}
+    knew that every adventure becomes special
+    when friends face it together.
+
+    `;
+
+
+    document.getElementById("storyOut").innerHTML =
+        developedStory;
+
+
+    /* DIALOGUES */
+
+    document.getElementById("bubble1").innerText =
+        "👋 " + character + ": Let's explore!";
+
+    document.getElementById("bubble2").innerText =
+        "😮 " + friend + ": What is that?!";
+
+    document.getElementById("bubble3").innerText =
+        "💪 We can do this together!";
+
+
+    /* ACTION CHANGES */
+
+    let actions = [
+        "⚡ WHOOSH! ✨",
+        "💥 BOOM! 💥",
+        "😱 OH NO!",
+        "🚀 LET'S GO!",
+        "🌟 AMAZING!"
+    ];
+
+    let randomAction =
+        actions[Math.floor(Math.random()*actions.length)];
+
+    document.querySelector(".action").innerText =
+        randomAction;
+
+
+    /* SCROLL TO RESULT */
+
+    document.getElementById("output")
+        .scrollIntoView({
+            behavior:"smooth"
+        });
+
+}
+
+</script>
+
+</body>
+</html>
